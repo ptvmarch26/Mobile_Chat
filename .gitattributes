@@ -1,0 +1,10 @@
+# Đảm bảo GitHub nhận diện JavaScript và TypeScript là ngôn ngữ chính
+*.js linguist-language=JavaScript
+*.jsx linguist-language=JavaScript
+*.ts linguist-language=TypeScript
+*.tsx linguist-language=TypeScript
+
+# Loại bỏ các thư mục không cần thiết khỏi phân tích ngôn ngữ
+node_modules/* linguist-vendored
+android/* linguist-vendored
+ios/* linguist-vendored
