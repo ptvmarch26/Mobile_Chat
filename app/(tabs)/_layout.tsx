@@ -1,45 +1,110 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
-import { Platform } from 'react-native';
+import { Tabs } from "expo-router";
+import { useEffect } from "react";
+import Animated, { useSharedValue, withTiming } from "react-native-reanimated";
+import { View } from "react-native";
+import { MessageCircleMore, BookUser, Bot, User } from "lucide-react-native";
+import Header from "@/components/Header";
 
-import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
-import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+const TabIcon = ({ IconComponent, color, size, focused }: any) => {
+  const scale = useSharedValue(focused ? 1.1 : 1);
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+  useEffect(() => {
+    scale.value = withTiming(focused ? 1.1 : 1, { duration: 200 });
+  }, [focused]);
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: 'absolute',
-          },
-          default: {},
-        }),
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+    <Animated.View style={{ transform: [{ scale: scale }] }}>
+      <IconComponent color={color} size={size} strokeWidth={2} />
+    </Animated.View>
   );
-}
+};
+
+const _layout = () => {
+  return (
+    <View className="flex-1">
+      <Header />
+      <Tabs
+        screenOptions={{
+          headerShown: false,
+          tabBarStyle: {
+            backgroundColor: "black",
+            height: 65,
+          },
+          tabBarItemStyle: {
+            width: "100%",
+            height: "100%",
+            flexDirection: "row",
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          },
+          tabBarActiveTintColor: "#0573ff",
+          tabBarInactiveTintColor: "#A1A1AA",
+          tabBarLabelStyle: {
+            marginTop: 5,
+            fontSize: 11,
+          },
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: "Tin nhắn",
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon
+                IconComponent={MessageCircleMore}
+                color={color}
+                size={size}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="phonebook"
+          options={{
+            title: "Danh bạ",
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon
+                IconComponent={BookUser}
+                color={color}
+                size={size}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="chatbot"
+          options={{
+            title: "Chatbot",
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon
+                IconComponent={Bot}
+                color={color}
+                size={size}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: "Cá nhân",
+            tabBarIcon: ({ color, size, focused }) => (
+              <TabIcon
+                IconComponent={User}
+                color={color}
+                size={size}
+                focused={focused}
+              />
+            ),
+          }}
+        />
+      </Tabs>
+    </View>
+  );
+};
+
+export default _layout;
